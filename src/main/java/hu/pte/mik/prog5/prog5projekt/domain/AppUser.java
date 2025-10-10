@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.Instant;
 
+
 @Entity @Table(name = "app_user")
 @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
 public class AppUser {

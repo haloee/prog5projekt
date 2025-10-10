@@ -1,0 +1,2 @@
+ALTER TABLE listing
+    MODIFY note LONGTEXT NULL;

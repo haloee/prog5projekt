@@ -1,0 +1,24 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Book Exchange</title></head>
+<body>
+<h1>Book Exchange</h1>
+<table border="1" cellpadding="6">
+    <thead>
+    <tr><th>Id</th><th>Book</th><th>Owner</th><th>Status</th><th>Type</th><th>Price</th></tr>
+    </thead>
+    <tbody>
+    <tr th:each="l : ${listings}">
+        <td th:text="${l.id}">1</td>
+        <td th:text="${l.book != null ? l.book.title : 'N/A'}">Title</td>
+        <td th:text="${l.owner != null ? l.owner.displayName : 'N/A'}">Owner</td>
+        <td th:text="${l.status}">ACTIVE</td>
+        <td th:text="${l.type}">SELL</td>
+        <td th:text="${l.priceHuf}">1000</td>
+    </tr>
+    </tbody>
+</table>
+
+<p><a href="/swagger-ui/index.html">Swagger UI</a></p>
+</body>
+</html>
