@@ -1,24 +1,85 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Book Exchange</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Book Exchange</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
 <body>
 <h1>Book Exchange</h1>
-<table border="1" cellpadding="6">
+
+<form method="get" th:action="@{/}">
+    <input type="text" name="q" th:value="${q}" placeholder="Keresés cím / owner / státusz">
+    <select name="status">
+        <option value="" th:selected="${status == null or status == ''}">-- any status --</option>
+        <option th:value="ACTIVE"   th:selected="${status == 'ACTIVE'}">ACTIVE</option>
+        <option th:value="RESERVED" th:selected="${status == 'RESERVED'}">RESERVED</option>
+        <option th:value="CLOSED"   th:selected="${status == 'CLOSED'}">CLOSED</option>
+    </select>
+    <button type="submit">Search</button>
+    <a th:href="@{/}">Reset</a>
+</form>
+
+<p class="actions">
+    <a th:href="@{/books/new}">+ New Book</a>
+    <a th:href="@{/listings/new}">+ New Listing</a>
+    <a href="/swagger-ui/index.html">Swagger UI</a>
+</p>
+
+<table class="table">
     <thead>
-    <tr><th>Id</th><th>Book</th><th>Owner</th><th>Status</th><th>Type</th><th>Price</th></tr>
+    <tr>
+        <th>#</th>
+        <th>Book</th>
+        <th>Owner</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
     </thead>
     <tbody>
-    <tr th:each="l : ${listings}">
+    <tr th:each="l : ${page.content}">
         <td th:text="${l.id}">1</td>
         <td th:text="${l.book != null ? l.book.title : 'N/A'}">Title</td>
         <td th:text="${l.owner != null ? l.owner.displayName : 'N/A'}">Owner</td>
-        <td th:text="${l.status}">ACTIVE</td>
         <td th:text="${l.type}">SELL</td>
+        <td th:text="${l.status}">ACTIVE</td>
         <td th:text="${l.priceHuf}">1000</td>
+        <td>
+            <a th:href="@{/listings/{id}/edit(id=${l.id})}">Edit</a>
+            <form th:action="@{/listings/{id}/delete(id=${l.id})}" method="post" style="display:inline">
+                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <button type="submit"
+                        th:onclick="|return confirm('Delete listing #${l.id}?')|">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(page.content)}">
+        <td colspan="7">No listings.</td>
     </tr>
     </tbody>
 </table>
 
-<p><a href="/swagger-ui/index.html">Swagger UI</a></p>
+<div th:if="${page.totalPages > 1}"
+     th:with="pn=${page.number}, tp=${page.totalPages}, ps=${page.size}, qv=${q}, st=${status}">
+    <span>
+      Page <span th:text="${pn + 1}">1</span> /
+      <span th:text="${tp}">1</span>
+    </span>
+    <div>
+        <a th:if="${pn > 0}"
+           th:href="@{/(page=${pn - 1},size=${ps},q=${qv},status=${st})}">
+            Prev
+        </a>
+        <a th:if="${pn + 1 < tp}"
+           th:href="@{/(page=${pn + 1},size=${ps},q=${qv},status=${st})}">
+            Next
+        </a>
+    </div>
+</div>
+
 </body>
 </html>

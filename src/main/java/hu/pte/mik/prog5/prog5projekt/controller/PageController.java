@@ -10,7 +10,7 @@ public class PageController {
     private final ListingRepository listings;
     public PageController(ListingRepository listings) { this.listings = listings; }
 
-    @GetMapping("/")
+    @GetMapping("/welcome")
     public String index(Model model) {
         model.addAttribute("listings", listings.findAll());
         return "index";

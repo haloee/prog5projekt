@@ -1,0 +1,82 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Listing</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h1 th:text="'Edit listing #' + ${id}">Edit listing</h1>
+
+<form th:action="@{/listings/{id}(id=${id})}" th:object="${dto}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+    <!-- Owner -->
+    <div>
+        <label for="ownerId">Owner</label>
+        <select id="ownerId" th:field="*{ownerId}" required>
+            <option value="">-- select owner --</option>
+            <option th:each="u : ${users}"
+                    th:value="${u.id}"
+                    th:text="${u.displayName}">User</option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('ownerId')}" th:errors="*{ownerId}">Owner error</div>
+    </div>
+
+    <!-- Book -->
+    <div>
+        <label for="bookId">Book</label>
+        <select id="bookId" th:field="*{bookId}" required>
+            <option value="">-- select book --</option>
+            <option th:each="b : ${books}"
+                    th:value="${b.id}"
+                    th:text="${b.title}">Book</option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}">Book error</div>
+    </div>
+
+    <!-- Condition -->
+    <div>
+        <label for="condition">Condition</label>
+        <select id="condition" th:field="*{condition}">
+            <option th:value="NEW">NEW</option>
+            <option th:value="GOOD">GOOD</option>
+            <option th:value="USED">USED</option>
+            <option th:value="WORN">WORN</option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('condition')}" th:errors="*{condition}">Condition error</div>
+    </div>
+
+    <!-- Type -->
+    <div>
+        <label for="type">Type</label>
+        <select id="type" th:field="*{type}">
+            <option th:value="SELL">SELL</option>
+            <option th:value="BUY">BUY</option>
+            <option th:value="TRADE">TRADE</option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}">Type error</div>
+    </div>
+
+    <!-- Price -->
+    <div>
+        <label for="priceHuf">Price (HUF)</label>
+        <input id="priceHuf" type="number" min="0" step="1" th:field="*{priceHuf}">
+        <div class="error" th:if="${#fields.hasErrors('priceHuf')}" th:errors="*{priceHuf}">Price error</div>
+    </div>
+
+    <!-- Note -->
+    <div>
+        <label for="note">Note</label>
+        <textarea id="note" rows="4" th:field="*{note}" placeholder="Optional note..."></textarea>
+        <div class="error" th:if="${#fields.hasErrors('note')}" th:errors="*{note}">Note error</div>
+    </div>
+
+    <p>
+        <button type="submit">Save</button>
+        <a th:href="@{/}">Cancel</a>
+    </p>
+</form>
+
+</body>
+</html>

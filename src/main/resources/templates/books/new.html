@@ -1,0 +1,46 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>New Book</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h1>New Book</h1>
+
+<form class="form" th:action="@{/books}" th:object="${dto}" method="post">
+    <label>Title
+        <input th:field="*{title}">
+        <div class="error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+    </label>
+
+    <label>Author
+        <input th:field="*{author}">
+        <div class="error" th:if="${#fields.hasErrors('author')}" th:errors="*{author}"></div>
+    </label>
+
+    <label>ISBN
+        <input th:field="*{isbn}">
+        <div class="error" th:if="${#fields.hasErrors('isbn')}" th:errors="*{isbn}"></div>
+    </label>
+
+    <label>Published year
+        <input type="number" th:field="*{publishedYear}">
+        <div class="error" th:if="${#fields.hasErrors('publishedYear')}" th:errors="*{publishedYear}"></div>
+    </label>
+
+    <label>Created by
+        <select th:field="*{createdByUserId}">
+            <option value="" disabled selected>-- select --</option>
+            <option th:each="u: ${users}" th:value="${u.id}"
+                    th:text="${u.displayName + ' (' + u.email + ')'}"></option>
+        </select>
+        <div class="error" th:if="${#fields.hasErrors('createdByUserId')}" th:errors="*{createdByUserId}"></div>
+    </label>
+
+    <p>
+        <button type="submit">Save</button>
+        <a th:href="@{/}">Cancel</a>
+    </p>
+</form>
+</body>
+</html>
