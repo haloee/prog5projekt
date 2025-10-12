@@ -1,0 +1,2 @@
+ALTER TABLE listing
+    ADD COLUMN image_url VARCHAR(255) NULL AFTER note;

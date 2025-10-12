@@ -1,0 +1,44 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Listing #' + ${listing.id}">Listing</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h1 th:text="'Listing #' + ${listing.id}">Listing</h1>
+
+<table class="table">
+    <tr><th>Book</th><td th:text="${listing.book != null ? listing.book.title : 'N/A'}">Book</td></tr>
+    <tr><th>Owner</th><td th:text="${listing.owner != null ? listing.owner.displayName : 'N/A'}">Owner</td></tr>
+    <tr><th>Condition</th><td th:text="${listing.condition}">GOOD</td></tr>
+    <tr><th>Type</th><td th:text="${listing.type}">SELL</td></tr>
+    <tr><th>Status</th><td th:text="${listing.status}">ACTIVE</td></tr>
+    <tr><th>Price (HUF)</th><td th:text="${listing.priceHuf}">0</td></tr>
+    <tr><th>Note</th><td th:text="${listing.note}">-</td></tr>
+    <tr th:if="${listing.imageUrl != null}">
+        <th>Image</th>
+        <td><img th:src="${listing.imageUrl}" alt="img" style="max-height:240px; max-width:100%"/></td>
+    </tr>
+    <tr><th>Created at</th><td th:text="${#temporals.format(listing.createdAt,'yyyy-MM-dd HH:mm')}">-</td></tr>
+</table>
+
+<div class="actions" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap">
+    <a th:href="@{/}">← Back</a>
+    <a th:href="@{/listings/{id}/edit(id=${listing.id})}">Edit</a>
+
+    <form th:action="@{/listings/{id}/status(id=${listing.id})}" method="post" style="display:inline">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <input type="hidden" name="fromShow" value="true">
+        <button type="submit" name="status" value="ACTIVE"   th:disabled="${listing.status=='ACTIVE'}">Set ACTIVE</button>
+        <button type="submit" name="status" value="RESERVED" th:disabled="${listing.status=='RESERVED'}">Set RESERVED</button>
+        <button type="submit" name="status" value="CLOSED"   th:disabled="${listing.status=='CLOSED'}">Set CLOSED</button>
+    </form>
+
+    <form th:action="@{/listings/{id}/delete(id=${listing.id})}" method="post" style="display:inline">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <button type="submit" th:onclick="|return confirm('Delete listing #${listing.id}?')|">Delete</button>
+    </form>
+</div>
+</body>
+</html>

@@ -1,67 +1,67 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8"><title>New Listing</title>
+    <meta charset="UTF-8">
+    <title>New Listing</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
 <body>
 <h1>New Listing</h1>
 
-<form class="form" th:action="@{/listings}" th:object="${dto}" method="post">
-    <!-- CSRF -->
+<form th:action="@{/listings}" method="post" th:object="${dto}" enctype="multipart/form-data">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-    <label>Owner
-        <select th:field="*{ownerId}">
-            <option value="" disabled selected>-- select user --</option>
-            <option th:each="u: ${users}" th:value="${u.id}"
-                    th:text="${u.displayName + ' (' + u.email + ')'}"></option>
-        </select>
-        <div class="error" th:if="${#fields.hasErrors('ownerId')}" th:errors="*{ownerId}"></div>
-    </label>
-
-    <label>Book
-        <select th:field="*{bookId}">
-            <option value="" disabled selected>-- select book --</option>
-            <option th:each="b: ${books}" th:value="${b.id}"
-                    th:text="${b.title + ' – ' + b.author}"></option>
+    <div>
+        <label>Book</label>
+        <select th:field="*{bookId}" required>
+            <option value="">-- select --</option>
+            <option th:each="b : ${books}"
+                    th:value="${b.id}"
+                    th:text="${b.title}"
+                    th:selected="${b.id} == *{bookId}">
+                Book
+            </option>
         </select>
         <div class="error" th:if="${#fields.hasErrors('bookId')}" th:errors="*{bookId}"></div>
-    </label>
+    </div>
 
-    <label>Condition
+    <div>
+        <label>Condition</label>
         <select th:field="*{condition}">
-            <option value="" disabled selected>-- select condition --</option>
-            <option value="NEW">NEW</option>
-            <option value="LIKE_NEW">LIKE_NEW</option>
-            <option value="GOOD">GOOD</option>
-            <option value="USED">USED</option>
+            <option th:value="NEW">NEW</option>
+            <option th:value="GOOD">GOOD</option>
+            <option th:value="USED">USED</option>
         </select>
-        <div class="error" th:if="${#fields.hasErrors('condition')}" th:errors="*{condition}"></div>
-    </label>
+    </div>
 
-    <label>Type
+    <div>
+        <label>Type</label>
         <select th:field="*{type}">
-            <option value="" disabled selected>-- select type --</option>
-            <option value="EXCHANGE">EXCHANGE</option>
-            <option value="GIVEAWAY">GIVEAWAY</option>
-            <option value="SELL">SELL</option>
+            <option th:value="SELL">SELL</option>
+            <option th:value="TRADE">TRADE</option>
+            <option th:value="GIVEAWAY">GIVEAWAY</option>
         </select>
-        <div class="error" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></div>
-    </label>
+    </div>
 
-    <label>Price (HUF)
-        <input type="number" th:field="*{priceHuf}">
+    <div>
+        <label>Price (HUF)</label>
+        <input type="number" min="0" th:field="*{priceHuf}"/>
         <div class="error" th:if="${#fields.hasErrors('priceHuf')}" th:errors="*{priceHuf}"></div>
-    </label>
+    </div>
 
-    <label>Note
-        <textarea rows="4" th:field="*{note}"></textarea>
+    <div>
+        <label>Note</label>
+        <textarea th:field="*{note}" rows="3"></textarea>
         <div class="error" th:if="${#fields.hasErrors('note')}" th:errors="*{note}"></div>
-    </label>
+    </div>
 
-    <p>
-        <button type="submit">Save</button>
+    <div>
+        <label>Image (optional)</label>
+        <input type="file" name="image" accept="image/*"/>
+    </div>
+
+    <p class="actions">
+        <button type="submit">Create</button>
         <a th:href="@{/}">Cancel</a>
     </p>
 </form>

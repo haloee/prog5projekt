@@ -12,9 +12,9 @@
     <input type="text" name="q" th:value="${q}" placeholder="Keresés cím / owner / státusz">
     <select name="status">
         <option value="" th:selected="${status == null or status == ''}">-- any status --</option>
-        <option th:value="ACTIVE"   th:selected="${status == 'ACTIVE'}">ACTIVE</option>
-        <option th:value="RESERVED" th:selected="${status == 'RESERVED'}">RESERVED</option>
-        <option th:value="CLOSED"   th:selected="${status == 'CLOSED'}">CLOSED</option>
+        <option th:value="ACTIVE"   th:selected="${status=='ACTIVE'}">ACTIVE</option>
+        <option th:value="RESERVED" th:selected="${status=='RESERVED'}">RESERVED</option>
+        <option th:value="CLOSED"   th:selected="${status=='CLOSED'}">CLOSED</option>
     </select>
     <button type="submit">Search</button>
     <a th:href="@{/}">Reset</a>
@@ -23,6 +23,7 @@
 <p class="actions">
     <a th:href="@{/books/new}">+ New Book</a>
     <a th:href="@{/listings/new}">+ New Listing</a>
+    <a th:href="@{/listings/me}">My listings</a>
     <a href="/swagger-ui/index.html">Swagger UI</a>
 </p>
 
@@ -30,6 +31,7 @@
     <thead>
     <tr>
         <th>#</th>
+        <th>Img</th><!-- új oszlop fejléc -->
         <th>Book</th>
         <th>Owner</th>
         <th>Type</th>
@@ -41,24 +43,38 @@
     <tbody>
     <tr th:each="l : ${page.content}">
         <td th:text="${l.id}">1</td>
+        <td>
+            <img th:if="${l.imageUrl != null}"
+                 th:src="${l.imageUrl}"
+                 alt="img" style="max-height:48px;max-width:48px"/>
+        </td>
         <td th:text="${l.book != null ? l.book.title : 'N/A'}">Title</td>
         <td th:text="${l.owner != null ? l.owner.displayName : 'N/A'}">Owner</td>
         <td th:text="${l.type}">SELL</td>
         <td th:text="${l.status}">ACTIVE</td>
         <td th:text="${l.priceHuf}">1000</td>
         <td>
+            <a th:href="@{/listings/{id}(id=${l.id})}">View</a>
+            &nbsp;|&nbsp;
             <a th:href="@{/listings/{id}/edit(id=${l.id})}">Edit</a>
+            &nbsp;|&nbsp;
+
+            <form th:action="@{/listings/{id}/status(id=${l.id})}" method="post" style="display:inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" name="status" value="ACTIVE"   th:disabled="${l.status=='ACTIVE'}">ACTIVE</button>
+                <button type="submit" name="status" value="RESERVED" th:disabled="${l.status=='RESERVED'}">RESERVED</button>
+                <button type="submit" name="status" value="CLOSED"   th:disabled="${l.status=='CLOSED'}">CLOSED</button>
+            </form>
+            &nbsp;|&nbsp;
+
             <form th:action="@{/listings/{id}/delete(id=${l.id})}" method="post" style="display:inline">
-                <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
-                <button type="submit"
-                        th:onclick="|return confirm('Delete listing #${l.id}?')|">
-                    Delete
-                </button>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" th:onclick="|return confirm('Delete listing #${l.id}?')|">Delete</button>
             </form>
         </td>
     </tr>
     <tr th:if="${#lists.isEmpty(page.content)}">
-        <td colspan="7">No listings.</td>
+        <td colspan="8">No listings.</td>
     </tr>
     </tbody>
 </table>

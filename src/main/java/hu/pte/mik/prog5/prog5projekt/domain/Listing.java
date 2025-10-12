@@ -48,4 +48,9 @@ public class Listing {
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
+
+    // Listing.java
+    @Column(name = "image_url")
+    private String imageUrl;
+
 }

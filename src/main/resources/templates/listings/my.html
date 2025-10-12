@@ -1,0 +1,48 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Listings</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<h1 th:text="'My Listings (' + ${me.displayName} + ')'">My Listings</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>#</th><th>Book</th><th>Status</th><th>Price</th><th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="l : ${page.content}">
+        <td th:text="${l.id}">1</td>
+        <td th:text="${l.book != null ? l.book.title : 'N/A'}">Book</td>
+        <td th:text="${l.status}">ACTIVE</td>
+        <td th:text="${l.priceHuf}">0</td>
+        <td>
+            <a th:href="@{/listings/{id}(id=${l.id})}">View</a> |
+            <a th:href="@{/listings/{id}/edit(id=${l.id})}">Edit</a> |
+            <form th:action="@{/listings/{id}/delete(id=${l.id})}" method="post" style="display:inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" th:onclick="|return confirm('Delete listing #${l.id}?')|">Delete</button>
+            </form>
+        </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(page.content)}">
+        <td colspan="5">No listings.</td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${page.totalPages > 1}">
+    <span>Page <span th:text="${page.number + 1}">1</span> / <span th:text="${page.totalPages}">1</span></span>
+    <div>
+        <a th:if="${page.hasPrevious()}" th:href="@{/listings/me(page=${page.number - 1},size=${page.size})}">Prev</a>
+        <a th:if="${page.hasNext()}" th:href="@{/listings/me(page=${page.number + 1},size=${page.size})}">Next</a>
+    </div>
+</div>
+
+<p><a th:href="@{/}">Back</a></p>
+</body>
+</html>
