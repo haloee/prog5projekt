@@ -12,13 +12,30 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .authorizeHttpRequests(reg -> reg
+                        .requestMatchers(
+                                "/",                 // főoldal
+                                "/css/**",           // statikus stílusok
+                                "/uploads/**",       // feltöltött képek
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
-                .logout(Customizer.withDefaults())
+                // beépített login oldal (ha saját login kell, itt megadható a .loginPage("/login"))
+                .formLogin(form -> form.permitAll())
+                // logout gomb POST /logout-ra; siker után vissza a főoldalra
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                )
+                // az API-khoz CSRF kivétel, a HTML formoknál marad
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
+
         return http.build();
     }
 }
