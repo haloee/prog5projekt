@@ -5,16 +5,12 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-/**
- * Create/Update DTO JSON API-hoz.
- * Megjegyzés: owner-t API POST-nál a bejelentkezett userre állítjuk,
- * PUT-nál opcionálisan engedheted adminnak módosítani (itt nem kérjük).
- */
+
 public record UpsertListingDto(
         @NotNull Long bookId,
         @Pattern(regexp = "NEW|GOOD|USED|WORN") String condition,
         @Pattern(regexp = "SELL|BUY|TRADE|GIVEAWAY") String type,
-        @Pattern(regexp = "ACTIVE|RESERVED|CLOSED") String status, // update-nál hasznos
+        @Pattern(regexp = "ACTIVE|RESERVED|CLOSED") String status,
         @Min(0) int priceHuf,
         @Size(max = 2000) String note
 ) {}

@@ -44,10 +44,9 @@ public class ListingPageController {
         this.users = users;
     }
 
-    @Value("${app.upload.dir:uploads}") // alapértelmezett mappa: ./uploads
+    @Value("${app.upload.dir:uploads}")
     private String uploadDir;
 
-    /* ==== segédek: aktuális user + role/admin ellenőrzés ==== */
 
     private String currentUsernameOrNull() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -83,7 +82,7 @@ public class ListingPageController {
         }
     }
 
-    /* --------- CREATE --------- */
+
 
     @GetMapping("/new")
     public String newForm(Model model) {
@@ -110,7 +109,7 @@ public class ListingPageController {
         var book = books.findById(dto.bookId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found"));
 
-        // kép mentése (opcionális)
+
         String imageUrl = null;
         if (image != null && !image.isEmpty()) {
             Files.createDirectories(Path.of(uploadDir)); // @Value-ból jön
@@ -139,7 +138,7 @@ public class ListingPageController {
     }
 
 
-    /* --------- EDIT FORM --------- */
+
 
     @GetMapping("/{id}/edit")
     public String editForm(@PathVariable Long id, Model model) {
@@ -162,21 +161,21 @@ public class ListingPageController {
         model.addAttribute("books", books.findAll());
         model.addAttribute("currentImageUrl", listing.getImageUrl());
 
-        // >>> fontos pluszok az edit.html-hez
+
         model.addAttribute("isAdmin", isAdmin());
         model.addAttribute("ownerName",
                 listing.getOwner() != null ? listing.getOwner().getDisplayName() : "—");
         if (isAdmin()) {
-            // csak adminnak kell a lista, de nem árt ha mindenki kapja
+
             model.addAttribute("users", users.findAll());
         }
-        // <<<
+
 
         return "listings/edit";
     }
 
 
-    /* --------- UPDATE --------- */
+
 
     @PostMapping("/{id}")
     public String update(@PathVariable Long id,
@@ -206,13 +205,12 @@ public class ListingPageController {
             return "listings/edit";
         }
 
-        // --- csak ADMIN változtathat tulajdonost ---
+
         if (isAdmin()) {
             var newOwner = users.findById(dto.ownerId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Owner not found"));
             existing.setOwner(newOwner);
         }
-        // nem adminnál marad a jelenlegi owner
 
         var book = books.findById(dto.bookId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found"));

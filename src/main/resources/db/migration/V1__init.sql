@@ -1,6 +1,3 @@
--- V1__baseline.sql
-
--- USERS
 CREATE TABLE app_user (
                           id            BIGINT PRIMARY KEY AUTO_INCREMENT,
                           email         VARCHAR(255) NOT NULL UNIQUE,
@@ -10,7 +7,7 @@ CREATE TABLE app_user (
                           created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- BOOKS
+
 CREATE TABLE book (
                       id            BIGINT PRIMARY KEY AUTO_INCREMENT,
                       title         VARCHAR(255) NOT NULL,
@@ -22,16 +19,15 @@ CREATE TABLE book (
                       CONSTRAINT fk_book_user FOREIGN KEY (created_by) REFERENCES app_user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- LISTINGS (VÉGSŐ oszlopnevekkel)
+
 CREATE TABLE listing (
                          id              BIGINT PRIMARY KEY AUTO_INCREMENT,
                          owner_id        BIGINT       NOT NULL,
                          book_id         BIGINT       NOT NULL,
 
-    -- végleges elnevezések:
-                         book_condition  VARCHAR(20)  NOT NULL,          -- NEW/LIKE_NEW/GOOD/USED/WORN
-                         listing_type    VARCHAR(20)  NOT NULL,          -- SELL/TRADE/BUY/GIVEAWAY
-                         status          VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE', -- ACTIVE/RESERVED/CLOSED
+                         book_condition  VARCHAR(20)  NOT NULL,
+                         listing_type    VARCHAR(20)  NOT NULL,
+                         status          VARCHAR(20)  NOT NULL DEFAULT 'ACTIVE',
 
                          price_huf       INT,
                          note            LONGTEXT NULL,
@@ -42,7 +38,6 @@ CREATE TABLE listing (
                          CONSTRAINT fk_listing_book  FOREIGN KEY (book_id)  REFERENCES book(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Indexek (gyors kereséshez)
 CREATE INDEX idx_listing_owner  ON listing(owner_id);
 CREATE INDEX idx_listing_book   ON listing(book_id);
 CREATE INDEX idx_listing_status ON listing(status);

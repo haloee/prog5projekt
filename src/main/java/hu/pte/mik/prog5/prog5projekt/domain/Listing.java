@@ -27,11 +27,11 @@ public class Listing {
     @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    // MariaDB reserved szó elkerülése: oszlopnév átnevezve
+
     @Column(name = "book_condition", nullable = false)
     private String condition; // NEW / LIKE_NEW / GOOD / USED
 
-    // MariaDB reserved szó elkerülése: oszlopnév átnevezve
+
     @Column(name = "listing_type", nullable = false)
     private String type;      // EXCHANGE / GIVEAWAY / SELL
 

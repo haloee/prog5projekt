@@ -5,8 +5,8 @@ import jakarta.validation.constraints.*;
 public record NewListingDto(
          Long ownerId,
         @NotNull Long bookId,
-        @NotBlank String condition,  // NEW/LIKE_NEW/GOOD/USED
-        @NotBlank String type,       // EXCHANGE/GIVEAWAY/SELL
+        @NotBlank String condition,
+        @NotBlank String type,
         @PositiveOrZero Integer priceHuf,
         String note
 ) {}

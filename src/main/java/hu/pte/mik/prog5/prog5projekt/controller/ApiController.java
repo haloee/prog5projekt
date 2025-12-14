@@ -29,16 +29,12 @@ public class ApiController {
         this.users = users;
     }
 
-    /* =========================================
-       ===============  DTO-k  =================
-       ========================================= */
 
-    // BOOK
     public record NewBook(String title, String author, String isbn, Integer publishedYear, Long createdByUserId) {}
     public record UpsertBook(String title, String author, String isbn, Integer publishedYear) {}
     public record BookDto(Long id, String title, String author, String isbn, Integer publishedYear, Long createdByUserId) {}
 
-    // LISTING
+
     public record NewListing(Long ownerId, Long bookId, String condition, String type, Integer priceHuf, String note) {}
     public record UpsertListing(Long ownerId, Long bookId, String condition, String type, Integer priceHuf, String note, String imageUrl) {}
     public record StatusChange(String status) {}
@@ -54,9 +50,7 @@ public class ApiController {
 
     public record PageResponse<T>(List<T> content, int page, int size, long totalElements, int totalPages) {}
 
-    /* =========================================
-       ==============  MAPPEREK  ===============
-       ========================================= */
+
 
     private static BookDto toDto(Book b) {
         return new BookDto(
@@ -86,9 +80,7 @@ public class ApiController {
         return new PageResponse<>(p.getContent(), p.getNumber(), p.getSize(), p.getTotalElements(), p.getTotalPages());
     }
 
-    /* =========================================
-       ===============  BOOK API  ==============
-       ========================================= */
+
 
     @PostMapping("/books")
     public ResponseEntity<?> createBook(@RequestBody NewBook req) {
@@ -136,9 +128,7 @@ public class ApiController {
         return ResponseEntity.noContent().build();
     }
 
-    /* =========================================
-       ==============  LISTING API  =============
-       ========================================= */
+
 
     @PostMapping("/listings")
     public ResponseEntity<?> createListing(@RequestBody NewListing req) {
@@ -158,11 +148,7 @@ public class ApiController {
         return toDto(l);
     }
 
-    /**
-     * Paginált kereső:
-     * - q: keresés könyvcímre / owner displayName-re / statusra (ListingRepository.search már tudja)
-     * - status: ACTIVE | RESERVED | CLOSED (vagy üres/null = bármi)
-     */
+
     @GetMapping("/listings")
     public PageResponse<ListingDto> searchListings(@RequestParam(required = false) String q,
                                                    @RequestParam(required = false) String status,
@@ -193,12 +179,12 @@ public class ApiController {
         l.setType(req.type());
         l.setPriceHuf(req.priceHuf());
         l.setNote(req.note());
-        l.setImageUrl(req.imageUrl()); // opcionális URL (a képfeltöltés a webes formban történik)
+        l.setImageUrl(req.imageUrl());
 
         return toDto(listings.save(l));
     }
 
-    /** Csak státusz váltás (kényelmes API a kliensnek) */
+
     @PatchMapping("/listings/{id}/status")
     public ListingDto changeStatus(@PathVariable Long id, @RequestBody StatusChange req) {
         var l = listings.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing not found"));

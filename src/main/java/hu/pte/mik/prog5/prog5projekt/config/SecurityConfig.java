@@ -23,9 +23,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
-                // beépített login oldal (ha saját login kell, itt megadható a .loginPage("/login"))
                 .formLogin(form -> form.permitAll())
-                // logout gomb POST /logout-ra; siker után vissza a főoldalra
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
@@ -33,7 +31,6 @@ public class SecurityConfig {
                         .deleteCookies("JSESSIONID")
                         .permitAll()
                 )
-                // az API-khoz CSRF kivétel, a HTML formoknál marad
                 .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
 
         return http.build();
