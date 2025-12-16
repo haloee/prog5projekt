@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  mariadb-prog5beadando:
+    image: mariadb:10.7.8
+    environment:
+      MARIADB_DATABASE: bookex    
+      MARIADB_USER: user
+      MARIADB_PASSWORD: password
+      MARIADB_ROOT_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mariadb:/docker-entrypoint-initdb.d:Z
